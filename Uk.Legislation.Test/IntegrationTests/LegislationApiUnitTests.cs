@@ -127,28 +127,10 @@ public class LegislationApiUnitTests : IntegrationTestBase
 	}
 
 	[Fact]
-	public async Task GetLegislationByTypeAsync_WithValidType_ReturnsParsedResults()
+	public async Task GetLegislationByTypeAsync_WithValidType_ReturnsNonNullResult()
 	{
 		// Arrange
-		const string mockFeed = """
-			<?xml version="1.0"?>
-			<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/">
-				<openSearch:totalResults>2</openSearch:totalResults>
-				<openSearch:startIndex>0</openSearch:startIndex>
-				<openSearch:itemsPerPage>20</openSearch:itemsPerPage>
-				<entry>
-					<id>http://www.legislation.gov.uk/ukpga/2020/1</id>
-					<title>Test Act 2020 No. 1</title>
-					<link href="http://www.legislation.gov.uk/ukpga/2020/1"/>
-				</entry>
-				<entry>
-					<id>http://www.legislation.gov.uk/ukpga/2020/2</id>
-					<title>Test Act 2020 No. 2</title>
-					<link href="http://www.legislation.gov.uk/ukpga/2020/2"/>
-				</entry>
-			</feed>
-			""";
-		var client = CreateMockClient(mockFeed);
+		var client = CreateMockClient(GetMockAtomFeed());
 
 		// Act
 		var result = await client
@@ -160,9 +142,60 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		// Assert
 		_ = result.Should().NotBeNull();
 		_ = result.Results.Should().NotBeEmpty();
+	}
+
+	[Fact]
+	public async Task GetLegislationByTypeAsync_WithValidType_ReturnsCorrectTotalResults()
+	{
+		// Arrange
+		var client = CreateMockClient(GetMockAtomFeed());
+
+		// Act
+		var result = await client
+			.Legislation
+			.GetLegislationByTypeAsync(
+				LegislationType.UkPublicGeneralAct,
+				cancellationToken: CancellationToken);
+
+		// Assert
 		_ = result.TotalResults.Should().Be(2);
+	}
+
+	[Fact]
+	public async Task GetLegislationByTypeAsync_WithValidType_ReturnsCorrectItemCount()
+	{
+		// Arrange
+		var client = CreateMockClient(GetMockAtomFeed());
+
+		// Act
+		var result = await client
+			.Legislation
+			.GetLegislationByTypeAsync(
+				LegislationType.UkPublicGeneralAct,
+				cancellationToken: CancellationToken);
+
+		// Assert
 		_ = result.Results.Should().HaveCount(2);
 	}
+
+	private static string GetMockAtomFeed() => """
+		<?xml version="1.0"?>
+		<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/">
+			<openSearch:totalResults>2</openSearch:totalResults>
+			<openSearch:startIndex>0</openSearch:startIndex>
+			<openSearch:itemsPerPage>20</openSearch:itemsPerPage>
+			<entry>
+				<id>http://www.legislation.gov.uk/ukpga/2020/1</id>
+				<title>Test Act 2020 No. 1</title>
+				<link href="http://www.legislation.gov.uk/ukpga/2020/1"/>
+			</entry>
+			<entry>
+				<id>http://www.legislation.gov.uk/ukpga/2020/2</id>
+				<title>Test Act 2020 No. 2</title>
+				<link href="http://www.legislation.gov.uk/ukpga/2020/2"/>
+			</entry>
+		</feed>
+		""";
 
 	[Fact]
 	public void Constructor_WithNullOptions_UsesDefaults()
