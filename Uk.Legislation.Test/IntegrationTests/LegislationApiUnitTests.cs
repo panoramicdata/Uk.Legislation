@@ -246,9 +246,14 @@ public class LegislationApiUnitTests : IntegrationTestBase
 	}
 
 	[Fact]
-	public void LegislationTypeExtensions_FromUriCode_ThrowsOnInvalidCode() =>
-		// Act & Assert
-		_ = Assert.Throws<ArgumentException>(() => LegislationTypeExtensions.FromUriCode("invalid"));
+	public void LegislationTypeExtensions_FromUriCode_ThrowsOnInvalidCode()
+	{
+		// Act
+		var act = () => LegislationTypeExtensions.FromUriCode("invalid");
+
+		// Assert
+		_ = act.Should().Throw<ArgumentException>();
+	}
 
 	[Fact]
 	public void LegislationTypeExtensions_TryFromUriCode_ReturnsTrueForValidCode()
