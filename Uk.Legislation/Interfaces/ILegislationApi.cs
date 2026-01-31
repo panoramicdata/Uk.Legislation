@@ -58,7 +58,6 @@ public interface ILegislationApi
 		int number,
 		CancellationToken cancellationToken);
 
-
 	/// <summary>
 	/// Get a specific provision XML
 	/// </summary>

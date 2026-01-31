@@ -86,7 +86,6 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		const LegislationType type = LegislationType.UkPublicGeneralAct;
 		const int year = 1998;
 		const int number = 42;
-		
 
 		// Act
 		var result = await Client.Legislation.GetProvisionXmlAsync(type, year, number, "section", "1", CancellationToken);
