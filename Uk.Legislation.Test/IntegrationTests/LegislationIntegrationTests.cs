@@ -79,17 +79,17 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Should().Contain("<Legislation");
 	}
 
-	[Fact(Skip = "Provision endpoints return 404 - known limitation of the legislation.gov.uk API")]
+	[Fact]
 	public async Task GetProvisionXmlAsync_WithKnownSection_ReturnsXml()
 	{
 		// Arrange - Get section 1 of Human Rights Act 1998
 		const LegislationType type = LegislationType.UkPublicGeneralAct;
 		const int year = 1998;
 		const int number = 42;
-		const string provision = "section/1";
+		
 
 		// Act
-		var result = await Client.Legislation.GetProvisionXmlAsync(type, year, number, provision, CancellationToken);
+		var result = await Client.Legislation.GetProvisionXmlAsync(type, year, number, "section", "1", CancellationToken);
 
 		// Assert
 		_ = result.Should().NotBeNullOrWhiteSpace();

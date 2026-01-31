@@ -58,22 +58,25 @@ public interface ILegislationApi
 		int number,
 		CancellationToken cancellationToken);
 
+
 	/// <summary>
 	/// Get a specific provision XML
 	/// </summary>
 	/// <param name="type">Legislation type</param>
 	/// <param name="year">Year</param>
 	/// <param name="number">Number</param>
-	/// <param name="provision">Provision identifier (e.g., "section/1", "regulation/3")</param>
+	/// <param name="provisionType">Provision type (e.g., "section", "regulation", "article")</param>
+	/// <param name="provisionNumber">Provision number (e.g., "1", "2/a")</param>
 	/// <param name="cancellationToken">Cancellation token</param>
 	/// <returns>XML content as string</returns>
-	[Get("/{type}/{year}/{number}/{provision}/data.xml")]
+	[Get("/{type}/{year}/{number}/{provisionType}/{provisionNumber}/data.xml")]
 	[Headers("Accept: application/xml")]
 	Task<string> GetProvisionXmlAsync(
 		LegislationType type,
 		int year,
 		int number,
-		string provision,
+		string provisionType,
+		string provisionNumber,
 		CancellationToken cancellationToken);
 
 	/// <summary>

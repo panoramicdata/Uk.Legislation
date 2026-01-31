@@ -94,7 +94,7 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		var client = CreateMockClient(mockXml);
 
 		// Act
-		var result = await client.Legislation.GetProvisionXmlAsync(LegislationType.UkPublicGeneralAct, 2020, 1, "section/1", CancellationToken);
+		var result = await client.Legislation.GetProvisionXmlAsync(LegislationType.UkPublicGeneralAct, 2020, 1, "section", "1", CancellationToken);
 
 		// Assert
 		_ = result.Should().NotBeNullOrWhiteSpace();
