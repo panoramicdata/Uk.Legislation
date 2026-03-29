@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Company>Panoramic Data Limited</Company>
     <Authors>Panoramic Data Limited</Authors>
-    <Copyright>© $([System.DateTime]::Now.Year)</Copyright>
+    <Copyright>© Panoramic Data Limited $([System.DateTime]::Now.Year)</Copyright>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Nullable>enable</Nullable>
     <NuGetAuditMode>All</NuGetAuditMode>
