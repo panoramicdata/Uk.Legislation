@@ -19,12 +19,22 @@ public class LegislationClient : IDisposable
 	public ILegislationApi Legislation { get; }
 
 	/// <summary>
+	/// Constructor with default options (creates own HttpClient)
+	/// </summary>
+	public LegislationClient()
+		: this(new LegislationClientOptions())
+	{
+	}
+
+	/// <summary>
 	/// Constructor with options (creates own HttpClient)
 	/// </summary>
 	/// <param name="options">Configuration options</param>
-	public LegislationClient(LegislationClientOptions? options = null)
+	public LegislationClient(LegislationClientOptions options)
 	{
-		_options = options ?? new LegislationClientOptions();
+		ArgumentNullException.ThrowIfNull(options);
+
+		_options = options;
 		_ownedHttpClient = new HttpClient
 		{
 			Timeout = _options.Timeout
@@ -38,15 +48,25 @@ public class LegislationClient : IDisposable
 	}
 
 	/// <summary>
+	/// Constructor with custom HttpClient and default options (for dependency injection)
+	/// </summary>
+	/// <param name="httpClient">Pre-configured HttpClient</param>
+	public LegislationClient(HttpClient httpClient)
+		: this(httpClient, new LegislationClientOptions())
+	{
+	}
+
+	/// <summary>
 	/// Constructor with custom HttpClient (for dependency injection)
 	/// </summary>
 	/// <param name="httpClient">Pre-configured HttpClient</param>
 	/// <param name="options">Configuration options</param>
-	public LegislationClient(HttpClient httpClient, LegislationClientOptions? options = null)
+	public LegislationClient(HttpClient httpClient, LegislationClientOptions options)
 	{
 		ArgumentNullException.ThrowIfNull(httpClient);
+		ArgumentNullException.ThrowIfNull(options);
 
-		_options = options ?? new LegislationClientOptions();
+		_options = options;
 		_disposeHttpClient = false;
 
 		ConfigureHttpClient(httpClient);

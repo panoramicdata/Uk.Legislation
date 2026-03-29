@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Polly;
@@ -11,36 +12,39 @@ namespace Uk.Legislation.Extensions;
 public static class ServiceCollectionExtensions
 {
 	/// <summary>
+	/// Adds the UK Legislation API client to the service collection using default options
+	/// </summary>
+	/// <param name="services">The service collection</param>
+	/// <returns>The service collection for chaining</returns>
+	public static IServiceCollection AddUkLegislationClient(this IServiceCollection services) =>
+		AddUkLegislationClient(services, static _ => { });
+
+	/// <summary>
 	/// Adds the UK Legislation API client to the service collection
 	/// </summary>
 	/// <param name="services">The service collection</param>
-	/// <param name="configure">Optional callback to configure client options</param>
+	/// <param name="configure">Callback to configure client options</param>
 	/// <returns>The service collection for chaining</returns>
 	public static IServiceCollection AddUkLegislationClient(
 		this IServiceCollection services,
-		Action<LegislationClientOptions>? configure = null)
+		Action<LegislationClientOptions> configure)
 	{
-		// Register options
-		if (configure is not null)
-		{
-			_ = services.Configure(configure);
-		}
-		else
-		{
-			_ = services.AddOptions<LegislationClientOptions>();
-		}
+		ArgumentNullException.ThrowIfNull(services);
+		ArgumentNullException.ThrowIfNull(configure);
+
+		_ = services.AddOptions<LegislationClientOptions>();
+		_ = services.Configure(configure);
 
 		// Register HttpClient for LegislationClient
 		_ = services.AddHttpClient<LegislationClient>((serviceProvider, httpClient) =>
 		{
-			var options = serviceProvider.GetService<IOptions<LegislationClientOptions>>()?.Value
-				?? new LegislationClientOptions();
+			var options = serviceProvider.GetRequiredService<IOptions<LegislationClientOptions>>().Value;
 
 			httpClient.Timeout = options.Timeout;
 			httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(options.UserAgent);
 			httpClient.DefaultRequestHeaders.Accept.Clear();
 			httpClient.DefaultRequestHeaders.Accept.Add(
-				new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+				new MediaTypeWithQualityHeaderValue("application/json"));
 		});
 
 		// Register LegislationClient as scoped
@@ -48,7 +52,7 @@ public static class ServiceCollectionExtensions
 		{
 			var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 			var httpClient = httpClientFactory.CreateClient(nameof(LegislationClient));
-			var options = serviceProvider.GetService<IOptions<LegislationClientOptions>>()?.Value;
+			var options = serviceProvider.GetRequiredService<IOptions<LegislationClientOptions>>().Value;
 
 			return new LegislationClient(httpClient, options);
 		});
@@ -57,15 +61,26 @@ public static class ServiceCollectionExtensions
 	}
 
 	/// <summary>
+	/// Adds the UK Legislation API client with Polly resilience policies using default options
+	/// </summary>
+	/// <param name="services">The service collection</param>
+	/// <returns>The service collection for chaining</returns>
+	public static IServiceCollection AddUkLegislationClientWithResilience(this IServiceCollection services) =>
+		AddUkLegislationClientWithResilience(services, static _ => { });
+
+	/// <summary>
 	/// Adds the UK Legislation API client with Polly resilience policies
 	/// </summary>
 	/// <param name="services">The service collection</param>
-	/// <param name="configure">Optional callback to configure client options</param>
+	/// <param name="configure">Callback to configure client options</param>
 	/// <returns>The service collection for chaining</returns>
 	public static IServiceCollection AddUkLegislationClientWithResilience(
 		this IServiceCollection services,
-		Action<LegislationClientOptions>? configure = null)
+		Action<LegislationClientOptions> configure)
 	{
+		ArgumentNullException.ThrowIfNull(services);
+		ArgumentNullException.ThrowIfNull(configure);
+
 		_ = services.AddUkLegislationClient(configure);
 
 		// Add Polly policies to the HttpClient
