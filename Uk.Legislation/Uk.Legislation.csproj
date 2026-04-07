@@ -1,11 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon />
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
     <!-- Package Metadata -->
     <PackageId>Uk.Legislation</PackageId>
     <Description>A comprehensive .NET client for the UK Government's Legislation API (legislation.gov.uk). Provides type-safe access to all UK legislation including Acts, Statutory Instruments, and more. Supports search, point-in-time versions, changes tracking, and multiple output formats (XML, Atom feeds).</Description>
@@ -17,23 +16,19 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>Icon.png</PackageIcon>
     <PackageReleaseNotes>v10.0.0 - Initial release with core legislation API support (XML/Atom parsing). See https://github.com/panoramicdata/Uk.Legislation/releases</PackageReleaseNotes>
-
     <!-- Symbol Package Configuration -->
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-
     <!-- Source Link Configuration -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
-
     <!-- Deterministic Build -->
     <Deterministic>true</Deterministic>
-
     <!-- Documentation -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NeutralResourcesLanguage>en</NeutralResourcesLanguage>
   </PropertyGroup>
-
   <ItemGroup>
     <!-- Refit for type-safe REST API -->
     <PackageReference Include="Nerdbank.GitVersioning">
@@ -42,22 +37,17 @@
     </PackageReference>
     <PackageReference Include="Refit" />
     <PackageReference Include="Refit.HttpClientFactory" />
-
     <!-- Microsoft Extensions for DI support -->
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />
     <PackageReference Include="Microsoft.Extensions.Options" />
-
     <!-- XML and Atom feed parsing -->
     <PackageReference Include="System.ServiceModel.Syndication" />
-
     <!-- Source Link -->
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="..\README.md" Pack="true" PackagePath="\" />
     <None Include="Icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
-
 </Project>

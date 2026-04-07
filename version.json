@@ -3,7 +3,8 @@
   "version": "10.0",
   "publicReleaseRefSpec": [
     "^refs/heads/main$",
-    "^refs/heads/master$"
+    "^refs/heads/master$",
+    "^refs/tags/\\d\u002B\\.\\d\u002B\\.\\d\u002B$"
   ],
   "cloudBuild": {
     "buildNumber": {
