@@ -10,6 +10,9 @@ namespace Uk.Legislation.Test.IntegrationTests;
 [Trait("Category", "Integration")]
 public class LegislationIntegrationTests : IntegrationTestBase
 {
+	/// <summary>
+	/// Verifies XML can be retrieved for a known Act.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationXmlAsync_WithKnownAct_ReturnsXml()
 	{
@@ -27,6 +30,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Should().Contain("Human Rights Act");
 	}
 
+	/// <summary>
+	/// Verifies parsed legislation can be retrieved for a known Act.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationAsync_WithKnownAct_ReturnsLegislation()
 	{
@@ -46,6 +52,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Title.Should().NotBeNullOrWhiteSpace();
 	}
 
+	/// <summary>
+	/// Verifies date-versioned XML can be retrieved for known legislation.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationAtDateXmlAsync_WithValidDate_ReturnsXml()
 	{
@@ -63,6 +72,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Should().Contain("<Legislation");
 	}
 
+	/// <summary>
+	/// Verifies as-enacted XML can be retrieved for a known Act.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationAsEnactedXmlAsync_WithKnownAct_ReturnsXml()
 	{
@@ -79,6 +91,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Should().Contain("<Legislation");
 	}
 
+	/// <summary>
+	/// Verifies provision XML can be retrieved for a known section.
+	/// </summary>
 	[Fact]
 	public async Task GetProvisionXmlAsync_WithKnownSection_ReturnsXml()
 	{
@@ -95,6 +110,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Should().Contain("<Legislation");
 	}
 
+	/// <summary>
+	/// Verifies table-of-contents XML can be retrieved for a known Act.
+	/// </summary>
 	[Fact]
 	public async Task GetTableOfContentsXmlAsync_WithKnownAct_ReturnsXml()
 	{
@@ -111,6 +129,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Should().Contain("<ContentsTitle");
 	}
 
+	/// <summary>
+	/// Verifies Atom feed XML can be retrieved for a legislation type.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationByTypeFeedAsync_WithValidType_ReturnsAtomFeed()
 	{
@@ -126,6 +147,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Should().Contain("http://www.w3.org/2005/Atom");
 	}
 
+	/// <summary>
+	/// Verifies Atom feed XML can be retrieved for a legislation type and year.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationByTypeAndYearFeedAsync_WithValidParameters_ReturnsAtomFeed()
 	{
@@ -141,6 +165,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Should().Contain("<feed");
 	}
 
+	/// <summary>
+	/// Verifies parsed results can be retrieved for a legislation type.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationByTypeAsync_WithValidType_ReturnsParsedResults()
 	{
@@ -156,6 +183,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.TotalResults.Should().BePositive();
 	}
 
+	/// <summary>
+	/// Verifies parsed results can be retrieved for a legislation type and year.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationByTypeAndYearAsync_WithValidParameters_ReturnsParsedResults()
 	{
@@ -172,6 +202,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		_ = result.Results.Should().Contain(item => item.Year == year);
 	}
 
+	/// <summary>
+	/// Verifies Atom feed parsing extracts legislation items from a real feed.
+	/// </summary>
 	[Fact]
 	public async Task ParseAtomFeed_WithRealFeed_ExtractsLegislationItems()
 	{
@@ -193,6 +226,9 @@ public class LegislationIntegrationTests : IntegrationTestBase
 		});
 	}
 
+	/// <summary>
+	/// Verifies HTML can be retrieved for a known Act.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationHtmlAsync_WithKnownAct_ReturnsHtml()
 	{

@@ -13,6 +13,9 @@ namespace Uk.Legislation.Test.IntegrationTests;
 [Trait("Category", "Unit")]
 public class LegislationApiUnitTests : IntegrationTestBase
 {
+	/// <summary>
+	/// Verifies XML is returned for a valid legislation request.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationXmlAsync_WithValidParameters_ReturnsXml()
 	{
@@ -31,6 +34,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = result.Should().Contain("Test Act 2020");
 	}
 
+	/// <summary>
+	/// Verifies parsed legislation is returned for a valid legislation request.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationAsync_WithValidParameters_ReturnsParsedLegislation()
 	{
@@ -55,6 +61,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = result.Title.Should().NotBeNullOrWhiteSpace();
 	}
 
+	/// <summary>
+	/// Verifies XML is returned for legislation at a specific date.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationAtDateXmlAsync_WithValidParameters_ReturnsXml()
 	{
@@ -71,6 +80,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = result.Should().Contain("<?xml");
 	}
 
+	/// <summary>
+	/// Verifies XML is returned for legislation as enacted.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationAsEnactedXmlAsync_WithValidParameters_ReturnsXml()
 	{
@@ -86,6 +98,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = result.Should().Contain("<?xml");
 	}
 
+	/// <summary>
+	/// Verifies XML is returned for a valid provision request.
+	/// </summary>
 	[Fact]
 	public async Task GetProvisionXmlAsync_WithValidParameters_ReturnsXml()
 	{
@@ -102,6 +117,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = result.Should().Contain("section");
 	}
 
+	/// <summary>
+	/// Verifies an Atom feed is returned for a valid legislation type.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationByTypeFeedAsync_WithValidType_ReturnsAtomFeed()
 	{
@@ -126,6 +144,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = result.Should().Contain("http://www.w3.org/2005/Atom");
 	}
 
+	/// <summary>
+	/// Verifies parsed results are returned for legislation by type.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationByTypeAsync_WithValidType_ReturnsNonNullResult()
 	{
@@ -144,6 +165,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = result.Results.Should().NotBeEmpty();
 	}
 
+	/// <summary>
+	/// Verifies total result count is parsed correctly for legislation by type.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationByTypeAsync_WithValidType_ReturnsCorrectTotalResults()
 	{
@@ -161,6 +185,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = result.TotalResults.Should().Be(2);
 	}
 
+	/// <summary>
+	/// Verifies item count is parsed correctly for legislation by type.
+	/// </summary>
 	[Fact]
 	public async Task GetLegislationByTypeAsync_WithValidType_ReturnsCorrectItemCount()
 	{
@@ -197,6 +224,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		</feed>
 		""";
 
+	/// <summary>
+	/// Verifies the default constructor creates a usable client.
+	/// </summary>
 	[Fact]
 	public void Constructor_WithNullOptions_UsesDefaults()
 	{
@@ -208,6 +238,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = client.Legislation.Should().NotBeNull();
 	}
 
+	/// <summary>
+	/// Verifies custom options are accepted by the client constructor.
+	/// </summary>
 	[Fact]
 	public void Constructor_WithCustomOptions_UsesProvidedOptions()
 	{
@@ -226,6 +259,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = client.Legislation.Should().NotBeNull();
 	}
 
+	/// <summary>
+	/// Verifies legislation types map to the expected URI codes.
+	/// </summary>
 	[Fact]
 	public void LegislationTypeExtensions_ToUriCode_ReturnsCorrectCode()
 	{
@@ -236,6 +272,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = LegislationType.WalesStatutoryInstrument.ToUriCode().Should().Be("wsi");
 	}
 
+	/// <summary>
+	/// Verifies URI codes map to the expected legislation types.
+	/// </summary>
 	[Fact]
 	public void LegislationTypeExtensions_FromUriCode_ReturnsCorrectEnum()
 	{
@@ -245,6 +284,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = LegislationTypeExtensions.FromUriCode("asp").Should().Be(LegislationType.ScottishAct);
 	}
 
+	/// <summary>
+	/// Verifies an invalid URI code throws an exception.
+	/// </summary>
 	[Fact]
 	public void LegislationTypeExtensions_FromUriCode_ThrowsOnInvalidCode()
 	{
@@ -255,6 +297,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = act.Should().Throw<ArgumentException>();
 	}
 
+	/// <summary>
+	/// Verifies TryFromUriCode succeeds for a valid URI code.
+	/// </summary>
 	[Fact]
 	public void LegislationTypeExtensions_TryFromUriCode_ReturnsTrueForValidCode()
 	{
@@ -266,6 +311,9 @@ public class LegislationApiUnitTests : IntegrationTestBase
 		_ = type.Should().Be(LegislationType.UkPublicGeneralAct);
 	}
 
+	/// <summary>
+	/// Verifies TryFromUriCode fails for an invalid URI code.
+	/// </summary>
 	[Fact]
 	public void LegislationTypeExtensions_TryFromUriCode_ReturnsFalseForInvalidCode()
 	{

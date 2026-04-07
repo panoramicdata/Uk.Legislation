@@ -5,6 +5,9 @@ namespace Uk.Legislation.Test.IntegrationTests;
 /// </summary>
 public abstract class IntegrationTestBase : IDisposable
 {
+	/// <summary>
+	/// Gets the current test cancellation token.
+	/// </summary>
 	protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
 
 	/// <summary>
