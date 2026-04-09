@@ -13,8 +13,13 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <NeutralResourcesLanguage>en</NeutralResourcesLanguage>
+    <PackageProjectUrl>https://github.com/panoramicdata/Uk.Legislation</PackageProjectUrl>
+    <PackageIcon>Icon.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Uk.Legislation\Uk.Legislation.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Uk.Legislation\Icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
