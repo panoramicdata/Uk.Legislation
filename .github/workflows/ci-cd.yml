@@ -46,8 +46,9 @@ jobs:
       - name: Build library
         run: dotnet build Uk.Legislation/Uk.Legislation.csproj --configuration Release --no-restore
 
+      # Builds the test project itself (only the library is built above). Integration tests call the live API and never run in CI.
       - name: Run tests
-        run: dotnet test Uk.Legislation.Test/Uk.Legislation.Test.csproj --configuration Release --no-build --logger "trx;LogFileName=test-results.trx" --results-directory TestResults
+        run: dotnet test --project Uk.Legislation.Test/Uk.Legislation.Test.csproj --configuration Release --filter "Category!=Integration" --results-directory TestResults
 
       - name: Pack library
         run: dotnet pack Uk.Legislation/Uk.Legislation.csproj --configuration Release --no-build --output ./nupkg
