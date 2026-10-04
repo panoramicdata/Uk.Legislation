@@ -27,8 +27,9 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
+    # Integration tests call the live legislation.gov.uk API and are run locally, never in CI.
     - name: Test
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal --filter "Category!=Integration"
 
     - name: Pack
       run: dotnet pack --configuration Release --no-build --output ./artifacts
