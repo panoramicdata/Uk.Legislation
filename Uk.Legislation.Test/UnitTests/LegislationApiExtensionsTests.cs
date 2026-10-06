@@ -70,15 +70,7 @@ public class LegislationApiExtensionsTests
 	public async Task GetLegislationByTypeAndYearAsync_WithFeed_ReturnsPagedResponse()
 	{
 		// Arrange
-		const string feed = """
-			<?xml version="1.0"?>
-			<feed xmlns="http://www.w3.org/2005/Atom">
-				<entry>
-					<id>http://www.legislation.gov.uk/id/ukpga/2020/1</id>
-					<title>Act 1</title>
-				</entry>
-			</feed>
-			""";
+		var feed = AtomFeedBuilder.Feed(string.Empty, AtomFeedBuilder.Entry("ukpga/2020/1", "Act 1"));
 		var api = new Mock<ILegislationApi>();
 		_ = api
 			.Setup(a => a.GetLegislationByTypeAndYearFeedAsync(LegislationType.UkPublicGeneralAct, 2020, It.IsAny<CancellationToken>()))

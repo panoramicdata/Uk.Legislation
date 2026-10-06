@@ -11,22 +11,45 @@ namespace Uk.Legislation.Test.UnitTests;
 public class ServiceCollectionExtensionsTests
 {
 	/// <summary>
-	/// Verifies the client resolves with default options.
+	/// The registration methods under test, each applied with default options.
 	/// </summary>
-	[Fact]
-	public void AddUkLegislationClient_WithDefaults_ResolvesClient()
+	public static TheoryData<string> Registrations =>
+	[
+		nameof(ServiceCollectionExtensions.AddUkLegislationClient),
+		nameof(ServiceCollectionExtensions.AddUkLegislationClientWithResilience),
+	];
+
+	/// <summary>
+	/// Verifies each registration method lets a scope resolve a usable client.
+	/// </summary>
+	[Theory]
+	[MemberData(nameof(Registrations))]
+	public void Register_WithDefaults_ResolvesClient(string registration)
 	{
 		// Arrange
 		var services = new ServiceCollection();
+		_ = Register(registration, services, static _ => { });
 
 		// Act
-		_ = services.AddUkLegislationClient();
 		using var provider = services.BuildServiceProvider();
 		using var scope = provider.CreateScope();
 		var client = scope.ServiceProvider.GetRequiredService<LegislationClient>();
 
 		// Assert
 		_ = client.Legislation.Should().NotBeNull();
+	}
+
+	/// <summary>
+	/// Verifies each registration method rejects null arguments.
+	/// </summary>
+	[Theory]
+	[MemberData(nameof(Registrations))]
+	public void Register_WithNullArguments_Throws(string registration)
+	{
+		_ = FluentActions.Invoking(() => Register(registration, null!, static _ => { }))
+			.Should().Throw<ArgumentNullException>().WithParameterName("services");
+		_ = FluentActions.Invoking(() => Register(registration, new ServiceCollection(), null!))
+			.Should().Throw<ArgumentNullException>().WithParameterName("configure");
 	}
 
 	/// <summary>
@@ -56,41 +79,23 @@ public class ServiceCollectionExtensionsTests
 	}
 
 	/// <summary>
-	/// Verifies the client resolves when resilience policies are added.
+	/// Verifies the parameterless overloads register the client.
 	/// </summary>
 	[Fact]
-	public void AddUkLegislationClientWithResilience_WithDefaults_ResolvesClient()
+	public void ParameterlessOverloads_RegisterClient()
 	{
-		// Arrange
-		var services = new ServiceCollection();
-
-		// Act
-		_ = services.AddUkLegislationClientWithResilience();
-		using var provider = services.BuildServiceProvider();
-		using var scope = provider.CreateScope();
-		var client = scope.ServiceProvider.GetRequiredService<LegislationClient>();
-
-		// Assert
-		_ = client.Legislation.Should().NotBeNull();
+		_ = new ServiceCollection().AddUkLegislationClient()
+			.Should().Contain(d => d.ServiceType == typeof(LegislationClient));
+		_ = new ServiceCollection().AddUkLegislationClientWithResilience()
+			.Should().Contain(d => d.ServiceType == typeof(LegislationClient));
 	}
 
-	/// <summary>
-	/// Verifies null arguments are rejected.
-	/// </summary>
-	[Fact]
-	public void AddUkLegislationClient_WithNullArguments_Throws()
-	{
-		// Arrange
-		var services = new ServiceCollection();
-
-		// Act & Assert
-		_ = FluentActions.Invoking(() => ServiceCollectionExtensions.AddUkLegislationClient(null!, _ => { }))
-			.Should().Throw<ArgumentNullException>();
-		_ = FluentActions.Invoking(() => services.AddUkLegislationClient(null!))
-			.Should().Throw<ArgumentNullException>();
-		_ = FluentActions.Invoking(() => ServiceCollectionExtensions.AddUkLegislationClientWithResilience(null!, _ => { }))
-			.Should().Throw<ArgumentNullException>();
-		_ = FluentActions.Invoking(() => services.AddUkLegislationClientWithResilience(null!))
-			.Should().Throw<ArgumentNullException>();
-	}
+	private static IServiceCollection Register(
+		string registration,
+		IServiceCollection services,
+		Action<LegislationClientOptions> configure) => registration switch
+		{
+			nameof(ServiceCollectionExtensions.AddUkLegislationClient) => services.AddUkLegislationClient(configure),
+			_ => services.AddUkLegislationClientWithResilience(configure)
+		};
 }

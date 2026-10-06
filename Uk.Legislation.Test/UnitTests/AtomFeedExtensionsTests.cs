@@ -1,5 +1,6 @@
 using AwesomeAssertions;
 using Uk.Legislation.Extensions;
+using static Uk.Legislation.Test.UnitTests.AtomFeedBuilder;
 
 namespace Uk.Legislation.Test.UnitTests;
 
@@ -16,18 +17,12 @@ public class AtomFeedExtensionsTests
 	public void ParseAtomFeed_WithFullEntry_ParsesAllFields()
 	{
 		// Arrange
-		const string feed = """
-			<?xml version="1.0"?>
-			<feed xmlns="http://www.w3.org/2005/Atom">
-				<entry>
-					<id>http://www.legislation.gov.uk/id/uksi/2021/1234</id>
-					<title>The Test Regulations 2021</title>
-					<summary>Test Regulations</summary>
-					<published>2021-03-15T00:00:00Z</published>
-					<link href="http://www.legislation.gov.uk/uksi/2021/1234"/>
-				</entry>
-			</feed>
-			""";
+		var feed = Feed(string.Empty, Entry(
+			"uksi/2021/1234",
+			"The Test Regulations 2021",
+			"<summary>Test Regulations</summary>" +
+			"<published>2021-03-15T00:00:00Z</published>" +
+			"<link href=\"http://www.legislation.gov.uk/uksi/2021/1234\"/>"));
 
 		// Act
 		var items = feed.ParseAtomFeed();
@@ -35,7 +30,7 @@ public class AtomFeedExtensionsTests
 		// Assert
 		var item = items.Should().ContainSingle().Subject;
 		_ = item.Title.Should().Be("The Test Regulations 2021");
-		_ = item.Uri.Should().Be("http://www.legislation.gov.uk/id/uksi/2021/1234");
+		_ = item.Uri.Should().Be(IdBase + "uksi/2021/1234");
 		_ = item.Href.Should().Be("http://www.legislation.gov.uk/uksi/2021/1234");
 		_ = item.Type.Should().Be("uksi");
 		_ = item.Year.Should().Be(2021);
@@ -50,19 +45,8 @@ public class AtomFeedExtensionsTests
 	[Fact]
 	public void ParseAtomFeed_WithUriWithoutNumber_ParsesTypeAndYearOnly()
 	{
-		// Arrange
-		const string feed = """
-			<?xml version="1.0"?>
-			<feed xmlns="http://www.w3.org/2005/Atom">
-				<entry>
-					<id>http://www.legislation.gov.uk/id/ukpga/2020</id>
-					<title>Acts of 2020</title>
-				</entry>
-			</feed>
-			""";
-
 		// Act
-		var item = feed.ParseAtomFeed().Single();
+		var item = Feed(string.Empty, Entry("ukpga/2020", "Acts of 2020")).ParseAtomFeed().Single();
 
 		// Assert
 		_ = item.Type.Should().Be("ukpga");
@@ -79,21 +63,8 @@ public class AtomFeedExtensionsTests
 	[Fact]
 	public void ParseAtomFeed_WithShortOrMissingUri_LeavesComponentsUnset()
 	{
-		// Arrange
-		const string feed = """
-			<?xml version="1.0"?>
-			<feed xmlns="http://www.w3.org/2005/Atom">
-				<entry>
-					<id>http://www.legislation.gov.uk/id/ukpga</id>
-					<title>Short</title>
-				</entry>
-				<entry>
-				</entry>
-			</feed>
-			""";
-
 		// Act
-		var items = feed.ParseAtomFeed();
+		var items = Feed(string.Empty, Entry("ukpga", "Short"), "<entry></entry>").ParseAtomFeed();
 
 		// Assert
 		_ = items.Should().HaveCount(2);
@@ -110,18 +81,9 @@ public class AtomFeedExtensionsTests
 	public void ParseAtomFeedPaged_WithOpenSearchElements_CalculatesPaging()
 	{
 		// Arrange
-		const string feed = """
-			<?xml version="1.0"?>
-			<feed xmlns="http://www.w3.org/2005/Atom" xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/">
-				<openSearch:totalResults>45</openSearch:totalResults>
-				<openSearch:startIndex>21</openSearch:startIndex>
-				<openSearch:itemsPerPage>20</openSearch:itemsPerPage>
-				<entry>
-					<id>http://www.legislation.gov.uk/ukpga/2020/21</id>
-					<title>Act 21</title>
-				</entry>
-			</feed>
-			""";
+		var feed = Feed(
+			OpenSearch("totalResults", 45) + OpenSearch("startIndex", 21) + OpenSearch("itemsPerPage", 20),
+			Entry("ukpga/2020/21", "Act 21"));
 
 		// Act
 		var result = feed.ParseAtomFeedPaged();
@@ -141,20 +103,9 @@ public class AtomFeedExtensionsTests
 	public void ParseAtomFeedPaged_WithLegislationNamespacePaging_EstimatesTotal()
 	{
 		// Arrange
-		const string feed = """
-			<?xml version="1.0"?>
-			<feed xmlns="http://www.w3.org/2005/Atom"
-				xmlns:openSearch="http://a9.com/-/spec/opensearch/1.1/"
-				xmlns:leg="http://www.legislation.gov.uk/namespaces/legislation">
-				<openSearch:itemsPerPage>20</openSearch:itemsPerPage>
-				<leg:page>2</leg:page>
-				<leg:morePages>3</leg:morePages>
-				<entry>
-					<id>http://www.legislation.gov.uk/ukpga/2020/1</id>
-					<title>Act 1</title>
-				</entry>
-			</feed>
-			""";
+		var feed = Feed(
+			OpenSearch("itemsPerPage", 20) + Leg("page", 2) + Leg("morePages", 3),
+			Entry("ukpga/2020/1", "Act 1"));
 
 		// Act
 		var result = feed.ParseAtomFeedPaged();
@@ -172,19 +123,7 @@ public class AtomFeedExtensionsTests
 	public void ParseAtomFeedPaged_WithoutPagingInformation_FallsBackToItemCount()
 	{
 		// Arrange
-		const string feed = """
-			<?xml version="1.0"?>
-			<feed xmlns="http://www.w3.org/2005/Atom">
-				<entry>
-					<id>http://www.legislation.gov.uk/ukpga/2020/1</id>
-					<title>Act 1</title>
-				</entry>
-				<entry>
-					<id>http://www.legislation.gov.uk/ukpga/2020/2</id>
-					<title>Act 2</title>
-				</entry>
-			</feed>
-			""";
+		var feed = Feed(string.Empty, Entry("ukpga/2020/1", "Act 1"), Entry("ukpga/2020/2", "Act 2"));
 
 		// Act
 		var result = feed.ParseAtomFeedPaged();
