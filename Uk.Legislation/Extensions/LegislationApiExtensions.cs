@@ -79,7 +79,7 @@ public static class LegislationApiExtensions
 			return null;
 		}
 
-		var startTag = xml.LastIndexOf('>', titleStart) + 1;
+		var startTag = xml.IndexOf('>', titleStart) + 1;
 		return xml[startTag..titleEnd];
 	}
 }

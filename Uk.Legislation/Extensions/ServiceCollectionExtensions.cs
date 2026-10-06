@@ -83,8 +83,9 @@ public static class ServiceCollectionExtensions
 
 		_ = services.AddUkLegislationClient(configure);
 
-		// Add Polly policies to the HttpClient
-		_ = services.AddHttpClient<LegislationClient>()
+		// Add Polly policies to the named HttpClient. Not AddHttpClient<LegislationClient>(): that would
+		// re-register LegislationClient as a typed client, replacing the scoped factory registered above.
+		_ = services.AddHttpClient(nameof(LegislationClient))
 			.AddPolicyHandler(HttpPolicyExtensions
 				.HandleTransientHttpError()
 				.WaitAndRetryAsync(3, retryAttempt =>
