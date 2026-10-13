@@ -93,9 +93,8 @@ public class ServiceCollectionExtensionsTests
 	private static IServiceCollection Register(
 		string registration,
 		IServiceCollection services,
-		Action<LegislationClientOptions> configure) => registration switch
-		{
-			nameof(ServiceCollectionExtensions.AddUkLegislationClient) => services.AddUkLegislationClient(configure),
-			_ => services.AddUkLegislationClientWithResilience(configure)
-		};
+		Action<LegislationClientOptions> configure)
+		=> registration == nameof(ServiceCollectionExtensions.AddUkLegislationClient)
+			? services.AddUkLegislationClient(configure)
+			: services.AddUkLegislationClientWithResilience(configure);
 }
