@@ -2,6 +2,8 @@
 
 A comprehensive .NET client library for the UK Government's Legislation API (legislation.gov.uk).
 
+Supports .NET 11.0.
+
 [![NuGet](https://img.shields.io/nuget/v/Uk.Legislation.svg)](https://www.nuget.org/packages/Uk.Legislation/)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2559f4d920f84f74bf04ba0802444baa)](https://app.codacy.com/gh/panoramicdata/Uk.Legislation/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -251,7 +253,7 @@ See [API_ENDPOINTS.md](API_ENDPOINTS.md) for detailed endpoint documentation.
 
 ## Requirements
 
-- .NET 10 or later
+- .NET 11.0 or later
 - Internet connection to access legislation.gov.uk
 
 ## Testing
