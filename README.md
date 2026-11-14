@@ -1,5 +1,7 @@
 # Uk.Legislation
 
+> **Need help with APIs or .NET?** Panoramic Data are experts in APIs and .NET, and we can help with your development. [Contact us](https://www.panoramicdata.com/contact-us) or see our [software services](https://www.panoramicdata.com/services/software).
+
 A comprehensive .NET client library for the UK Government's Legislation API (legislation.gov.uk).
 
 Supports .NET 11.0.
